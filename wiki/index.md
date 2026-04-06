@@ -31,8 +31,7 @@ Canonical list of all tags in use. The LLM must add new `domain:` tags here with
 
 | Tag | Definition |
 |-----|-----------|
-| `source:notion-clip` | Knowledge derived from a Notion Web Clipper export |
-| `source:manual` | Knowledge from manually written or pasted source material |
+| `source:readwise` | Knowledge derived from a Readwise Reader highlight export |
 | `source:paper` | Knowledge derived from an academic paper or research report |
 
 ---

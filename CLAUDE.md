@@ -32,11 +32,10 @@ LLM-Wiki-Implementation/
 │       └── _template.md
 │
 ├── sources/                         ← Raw input material (human-owned, never edited by LLM)
-│   ├── notion-exports/              ← Markdown exported from Notion pages
-│   └── manual/                      ← Other raw text dropped in manually
+│   └── readwise-exports/            ← Markdown exported from Readwise Reader
 │
 └── scripts/
-    └── notion-export-guide.md       ← How to export from Notion
+    └── readwise-export-guide.md     ← How to export from Readwise Reader
 ```
 
 **Key rule:** Nothing in `sources/` is ever edited or deleted by the LLM. It is read-only feedstock. The LLM owns everything inside `wiki/`.
@@ -117,20 +116,21 @@ confidence: high | medium | low
 
 ## Ingest Workflow
 
-**Trigger:** New files appear in `sources/notion-exports/` or `sources/manual/`.
+**Trigger:** New files appear in `sources/readwise-exports/`.
 
 Follow these steps in order:
 
 1. Read this file (`CLAUDE.md`) fully.
 2. Read `wiki/index.md` to load the current page registry and tag taxonomy into context.
-3. Identify unprocessed sources: files in `sources/` whose filename does not yet appear in any wiki page's `sources:` or `source_file:` frontmatter field.
+3. Identify unprocessed sources: files in `sources/readwise-exports/` whose filename does not yet appear in any wiki page's `sources:` or `source_file:` frontmatter field.
 4. For each unprocessed source:
    - Read the full file.
-   - If it is a Notion export, strip the top-level Notion property table (the key-value block at the very top of the export). It is workspace metadata, not knowledge.
-   - Treat `> ` blockquotes that came from Notion callout blocks as user-highlighted content — weight them more heavily during synthesis.
-   - Ignore broken image paths (Notion exports contain relative image paths that will not resolve). Only use alt-text if it contains substantive content.
-   - Preserve any personal annotations or comments the user added to the Notion page body. File these under "Open Questions" or "Notes" in the wiki page — do not treat them as source facts.
-   - Determine the primary knowledge type: concept, entity, event, or reference.
+   - Parse the Readwise export format:
+     - The `## Metadata` block at the top contains `Author`, `URL`, and `Date` — use these to populate `author`, `source_url`, and `source_date` in the wiki page frontmatter.
+     - `> ` blockquote lines are the user's selected highlights — treat these as high-weight content during synthesis. They represent what the user found most valuable.
+     - `Note:` lines immediately following a highlight are the user's personal annotations — file these under "Open Questions" or "Notes" in the wiki page. Do not treat them as source facts.
+     - Images are not included in Readwise exports; ignore any broken image references.
+   - Determine the primary knowledge type: concept, entity, event, or reference. Readwise exports are almost always `reference` type unless the content is clearly a primary source about a single concept or entity.
    - Check `wiki/index.md` for existing pages that overlap with this source. If a match exists, update that page rather than creating a new one.
    - Draft the new or updated wiki page using the appropriate `_template.md` as the schema.
    - Assign tags from the canonical taxonomy. If new tags are needed, add them to the taxonomy in `wiki/index.md` with a one-sentence definition before using them.
@@ -210,7 +210,7 @@ Tags must be drawn from the canonical list in `wiki/index.md`. Three namespaces:
 |--------|---------|---------|
 | `domain:` | Subject area | `domain:machine-learning` |
 | `status:` | Editorial state | `status:stub`, `status:evergreen`, `status:needs-review` |
-| `source:` | Provenance | `source:notion-clip`, `source:manual`, `source:paper` |
+| `source:` | Provenance | `source:readwise`, `source:paper` |
 
 Rules:
 - Every page carries **1–3** `domain:` tags, **exactly 1** `status:` tag, and **0 or more** `source:` tags.
@@ -246,4 +246,4 @@ The LLM must never:
 - Create a wiki page without a complete frontmatter block matching the schema for its type.
 - Invent a `domain:` tag without first adding it to the Tag Taxonomy in `wiki/index.md`.
 - Use a `related:` path that does not correspond to an existing file.
-- Treat user annotations in Notion exports as source facts.
+- Treat user `Note:` annotations in Readwise exports as source facts.
