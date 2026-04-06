@@ -39,17 +39,7 @@ The more intentional your highlights, the richer the resulting wiki pages.
 4. Click **Export** — Readwise downloads a zip file
 5. Unzip and move the `.md` files into `sources/readwise-exports/` in this repository
 
-### Option B: Continuous export via Readwise official integrations
-
-Readwise has a built-in **Export to Obsidian** feature that writes markdown files to a folder on your machine. Even though you are not using Obsidian, you can point it at `sources/readwise-exports/` directly:
-
-1. In Readwise, go to **Export** → **Obsidian**
-2. Set the export folder to the `sources/readwise-exports/` directory in this repo
-3. Readwise will automatically sync new highlights into that folder
-
-This gives you a zero-friction pipeline: highlight in Reader → files appear in `sources/readwise-exports/` automatically.
-
-### Option C: Readwise API (for automation)
+### Option B: Readwise API (for automation)
 
 Readwise exposes a REST API at `https://readwise.io/api/v2/`. You can write a script to pull new highlights since the last export and write them as markdown files into `sources/readwise-exports/`. The API token is available under Readwise account settings.
 
