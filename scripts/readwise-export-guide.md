@@ -31,17 +31,37 @@ The more intentional your highlights, the richer the resulting wiki pages.
 
 ## Step 3 — Export from Readwise
 
-### Option A: Manual export (one-time or batched)
+### Option A: API sync script (recommended)
+
+`scripts/readwise_sync.py` handles everything automatically — fetching highlights, grouping them by source document, writing markdown files, and tracking what has already been exported so only new highlights are fetched on subsequent runs.
+
+**One-time setup:**
+
+```bash
+pip install requests python-dotenv
+```
+
+Get your API token from [readwise.io/access_token](https://readwise.io/access_token) and add it to a `.env` file at the repo root:
+
+```
+READWISE_TOKEN=your_token_here
+```
+
+**Run the sync:**
+
+```bash
+python scripts/readwise_sync.py
+```
+
+First run exports everything. Subsequent runs only fetch highlights updated since the last run. Files land directly in `sources/readwise-exports/` — no zip, no manual steps.
+
+### Option B: Manual export (one-off or batched)
 
 1. Go to [readwise.io/export](https://readwise.io/export)
 2. Select **Markdown** as the export format
 3. Optionally filter by date range or book/article type
 4. Click **Export** — Readwise downloads a zip file
 5. Unzip and move the `.md` files into `sources/readwise-exports/` in this repository
-
-### Option B: Readwise API (for automation)
-
-Readwise exposes a REST API at `https://readwise.io/api/v2/`. You can write a script to pull new highlights since the last export and write them as markdown files into `sources/readwise-exports/`. The API token is available under Readwise account settings.
 
 ---
 

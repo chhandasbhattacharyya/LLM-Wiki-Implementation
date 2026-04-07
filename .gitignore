@@ -2,8 +2,11 @@
 .DS_Store
 Thumbs.db
 
-# Notion export zips (unzip and place .md files in sources/notion-exports/)
-sources/notion-exports/*.zip
+# Readwise export zips (unzip and place .md files in sources/readwise-exports/)
+sources/readwise-exports/*.zip
+
+# Readwise sync cursor (tracks last export timestamp — machine-local)
+sources/readwise-exports/.last_export
 
 # Editor files
 .vscode/
@@ -14,6 +17,7 @@ sources/notion-exports/*.zip
 # Environment / secrets
 .env
 .env.*
+!.env.example
 
 # Python
 __pycache__/
