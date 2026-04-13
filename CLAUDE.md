@@ -32,10 +32,11 @@ LLM-Wiki-Implementation/
 │       └── _template.md
 │
 ├── sources/                         ← Raw input material (human-owned, never edited by LLM)
-│   └── readwise-exports/            ← Markdown exported from Readwise Reader
+│   └── obsidian-exports/            ← Markdown exported from Obsidian vault
 │
 └── scripts/
-    └── readwise-export-guide.md     ← How to export from Readwise Reader
+    ├── obsidian-export-guide.md     ← How to clip and sync from Obsidian
+    └── obsidian_sync.py             ← Copies new clips from vault to sources/
 ```
 
 **Key rule:** Nothing in `sources/` is ever edited or deleted by the LLM. It is read-only feedstock. The LLM owns everything inside `wiki/`.
@@ -116,21 +117,21 @@ confidence: high | medium | low
 
 ## Ingest Workflow
 
-**Trigger:** New files appear in `sources/readwise-exports/`.
+**Trigger:** New files appear in `sources/obsidian-exports/`.
 
 Follow these steps in order:
 
 1. Read this file (`CLAUDE.md`) fully.
 2. Read `wiki/index.md` to load the current page registry and tag taxonomy into context.
-3. Identify unprocessed sources: files in `sources/readwise-exports/` whose filename does not yet appear in any wiki page's `sources:` or `source_file:` frontmatter field.
+3. Identify unprocessed sources: files in `sources/obsidian-exports/` whose filename does not yet appear in any wiki page's `sources:` or `source_file:` frontmatter field.
 4. For each unprocessed source:
    - Read the full file.
-   - Parse the Readwise export format:
-     - The `## Metadata` block at the top contains `Author`, `URL`, and `Date` — use these to populate `author`, `source_url`, and `source_date` in the wiki page frontmatter.
-     - `> ` blockquote lines are the user's selected highlights — treat these as high-weight content during synthesis. They represent what the user found most valuable.
-     - `Note:` lines immediately following a highlight are the user's personal annotations — file these under "Open Questions" or "Notes" in the wiki page. Do not treat them as source facts.
-     - Images are not included in Readwise exports; ignore any broken image references.
-   - Determine the primary knowledge type: concept, entity, event, or reference. Readwise exports are almost always `reference` type unless the content is clearly a primary source about a single concept or entity.
+   - Parse the Obsidian Web Clipper export format:
+     - The YAML frontmatter block at the top of the file contains `title`, `source` (URL), `author`, `date`, and optionally `tags` — use these to populate frontmatter fields in the wiki page.
+     - `==highlighted text==` spans are passages the user marked while reading — treat these as high-weight content during synthesis.
+     - `> [!note]`, `> [!annotation]`, or `> [!comment]` callout blocks are the user's personal annotations — file these under "Open Questions" or "Notes" in the wiki page. Do not treat them as source facts.
+     - Images appear as local attachment paths (e.g. `![[image.png]]`) that will not resolve outside the vault — ignore them unless the alt-text contains substantive content.
+   - Determine the primary knowledge type: concept, entity, event, or reference. Obsidian Web Clipper exports are almost always `reference` type unless the content is clearly a primary source about a single concept or entity.
    - Check `wiki/index.md` for existing pages that overlap with this source. If a match exists, update that page rather than creating a new one.
    - Draft the new or updated wiki page using the appropriate `_template.md` as the schema.
    - Assign tags from the canonical taxonomy. If new tags are needed, add them to the taxonomy in `wiki/index.md` with a one-sentence definition before using them.
@@ -210,7 +211,7 @@ Tags must be drawn from the canonical list in `wiki/index.md`. Three namespaces:
 |--------|---------|---------|
 | `domain:` | Subject area | `domain:machine-learning` |
 | `status:` | Editorial state | `status:stub`, `status:evergreen`, `status:needs-review` |
-| `source:` | Provenance | `source:readwise`, `source:paper` |
+| `source:` | Provenance | `source:obsidian-clip`, `source:paper` |
 
 Rules:
 - Every page carries **1–3** `domain:` tags, **exactly 1** `status:` tag, and **0 or more** `source:` tags.
@@ -246,4 +247,4 @@ The LLM must never:
 - Create a wiki page without a complete frontmatter block matching the schema for its type.
 - Invent a `domain:` tag without first adding it to the Tag Taxonomy in `wiki/index.md`.
 - Use a `related:` path that does not correspond to an existing file.
-- Treat user `Note:` annotations in Readwise exports as source facts.
+- Treat user annotations in Obsidian exports as source facts.

@@ -31,7 +31,7 @@ Canonical list of all tags in use. The LLM must add new `domain:` tags here with
 
 | Tag | Definition |
 |-----|-----------|
-| `source:readwise` | Knowledge derived from a Readwise Reader highlight export |
+| `source:obsidian-clip` | Knowledge derived from an Obsidian Web Clipper export |
 | `source:paper` | Knowledge derived from an academic paper or research report |
 
 ---

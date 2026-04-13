@@ -2,11 +2,8 @@
 .DS_Store
 Thumbs.db
 
-# Readwise export zips (unzip and place .md files in sources/readwise-exports/)
-sources/readwise-exports/*.zip
-
-# Readwise sync cursor (tracks last export timestamp — machine-local)
-sources/readwise-exports/.last_export
+# Obsidian sync cursor (tracks last sync timestamp — machine-local)
+sources/obsidian-exports/.last_sync
 
 # Editor files
 .vscode/

@@ -36,3 +36,15 @@ Entry format:
 - **Tags added**: source:readwise
 - **Tags removed**: source:notion-clip, source:manual
 - **Notes**: User will use Readwise Reader exclusively. Removed sources/notion-exports/ and sources/manual/; created sources/readwise-exports/. Updated Ingest workflow to parse Readwise export format (Metadata block, highlight blockquotes, Note: annotations). Replaced scripts/notion-export-guide.md with scripts/readwise-export-guide.md.
+
+---
+
+## 2026-04-13 — Switched source pipeline from Readwise to Obsidian Web Clipper
+
+- **Action**: Manual Edit
+- **Sources processed**: none
+- **Pages created**: none
+- **Pages updated**: CLAUDE.md, wiki/index.md
+- **Tags added**: source:obsidian-clip
+- **Tags removed**: source:readwise
+- **Notes**: User stopped using Readwise (cost). Switched to Obsidian Web Clipper. Removed sources/readwise-exports/; created sources/obsidian-exports/. Updated Ingest workflow to parse Obsidian export format (YAML frontmatter, ==highlights==, callout annotations). Replaced readwise scripts with obsidian_sync.py and obsidian-export-guide.md.
